@@ -1,7 +1,14 @@
-const dotenv = require('dotenv')
+const dotenv = require("dotenv");
 
-dotenv.config()
+dotenv.config();
 
 module.exports = {
-  SERVER_PORT
-} = process.env
+  SERVER_PORT,
+  REGION,
+  ACCESSKEYID,
+  ACCESSKEYSECRET,
+  BUCKET,
+  MYSQL_USER,
+  MYSQL_PASSWORD,
+  MYSQL_DATABASE,
+} = process.env;

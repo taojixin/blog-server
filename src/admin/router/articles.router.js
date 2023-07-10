@@ -10,6 +10,9 @@ const {
   getArticles,
   delArticle,
   modifyArticle,
+  getArticleMessage,
+  getArticleDetail,
+  deleteArtMessage
 } = require("../controller/articles.controller");
 
 const articleRouter = new KoaRouter({ prefix: "/admin/articles" });
@@ -31,9 +34,16 @@ articleRouter.post("/delarticle", delArticle)
 articleRouter.post("/queryarticles", queryAtricles);
 // 查询标签:根据文章id
 articleRouter.post("/querylabel", queryLabels);
-// 查询某个文章是否存在
+// 查询某个文章是否存在，以及详细内容
 articleRouter.post("/queryisexistart", queryAtricle)
 // 修改文章
 articleRouter.post("/modifyarticle", modifyArticle)
+// 获取文章评论
+articleRouter.post("/getarticlemsg", getArticleMessage)
+// 获取文章信息(未转换的)
+articleRouter.post("/getArticleDetail", getArticleDetail)
+// 删除文章评论
+articleRouter.post("/deleteartmsg", deleteArtMessage)
+
 
 module.exports = articleRouter;

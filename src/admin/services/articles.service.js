@@ -5,7 +5,21 @@ class ArticlesService {
   async getLabelsSer() {
     const statement = "select * from labels;";
     const result = await connection.execute(statement);
-    return result[0];
+    const countStatement =
+      "select count(*) as count from aritcles_labels where label_id = ?;";
+    let resultEnd = [];
+    await Promise.all(
+      result[0].map(async (item) => {
+        const count = await connection.execute(countStatement, [item.id]);
+        resultEnd.push({
+          id: item.id,
+          label: item.label,
+          time: item.time,
+          articleCount: count[0][0].count,
+        });
+      })
+    );
+    return resultEnd;
   }
   // 查询标签是否存在
   async isExistLabel(label) {
@@ -97,7 +111,9 @@ class ArticlesService {
         let labelArr = [];
         await Promise.all(
           result3[0].map(async (item) => {
-            const result4 = await connection.execute(statement4, [item.label_id]);
+            const result4 = await connection.execute(statement4, [
+              item.label_id,
+            ]);
             labelArr.push(result4[0][0]);
           })
         );
@@ -113,10 +129,10 @@ class ArticlesService {
     let statement;
     let result1;
     if (count === "all") {
-      statement = "select * from articles;";
+      statement = "select id,title,description,time from articles;";
       result1 = await connection.execute(statement);
     } else {
-      statement = "select * from articles limit ?, ?;";
+      statement = "select id,title,description,time from articles limit ?, ?;";
       try {
         result1 = await connection.execute(statement, [
           offset + "",
@@ -133,13 +149,6 @@ class ArticlesService {
       result1[0].map(async (item) => {
         // 每一个文章
         let article = item;
-        // {
-        //   id: 6,
-        //   title: '标题',
-        //   content: '内容',
-        //   description: '描述',
-        //   time: 2023-04-30T07:02:47.000Z
-        // }
         // 根据文章查关系表，从表中获取这个文章有哪些标签
         const result2 = await connection.execute(statement2, [item.id]);
         let labes = [];
@@ -193,6 +202,12 @@ class ArticlesService {
       })
     );
     /* ******************** */
+    // 每获取一次则则增加文章浏览量
+    const statementView = "select views from articles where id = ?;";
+    const reslutView = await connection.execute(statementView, [articleId]);
+    const views = reslutView[0][0].views;
+    const addViewStatement = "update articles set views = ? where id = ?;";
+    await connection.execute(addViewStatement, [views + 1, articleId]);
     return endResult;
   }
 
@@ -218,21 +233,91 @@ class ArticlesService {
 
   // 删除文章与标签的关系数据
   async deleteArtLab(articleId) {
-    const statement = "delete from aritcles_labels where aritcle_id = ?;"
-    const result = await connection.execute(statement, [articleId])
-    return result[0]
+    const statement = "delete from aritcles_labels where aritcle_id = ?;";
+    const result = await connection.execute(statement, [articleId]);
+    return result[0];
   }
 
   // 添加文字与标签的关系数据
   async addArtLab(aritcle_id, label_id) {
-    const statement = "insert into aritcles_labels (aritcle_id, label_id) values (?,?);"
+    const statement =
+      "insert into aritcles_labels (aritcle_id, label_id) values (?,?);";
     let result;
     try {
-      result = await connection.execute(statement, [aritcle_id, label_id])
-    } catch(err) {
+      result = await connection.execute(statement, [aritcle_id, label_id]);
+    } catch (err) {
       console.log(err);
     }
-    return result[0]
+    return result[0];
+  }
+
+  // 获取图片信息
+  async getImageMsg(count) {
+    const statement = "select url from images order by rand() limit ?;";
+    const result = await connection.execute(statement, [count + ""]);
+    return result[0];
+  }
+  // 获取文章评论
+  async getArticleMessageSer(articleId, count, offset) {
+    const statement =
+      "select id,name,content,qq,time,replyId, article_id from articles_message where replyId = 0 and article_id = ? order by id desc limit ?, ?;";
+    const [result1] = await connection.execute(statement, [
+      articleId,
+      offset + "",
+      count + "",
+    ]);
+    const statementRep =
+      "select id,name,content,qq,time,replyId, article_id from articles_message where replyId = ?;";
+    await Promise.all(
+      result1.map(async (item) => {
+        const [res] = await connection.execute(statementRep, [item.id]);
+        item.replyMsg = res;
+        return item;
+      })
+    );
+    return result1;
+  }
+  // 获取文章评论总数
+  async getArticleMessageTotal(articleId) {
+    const statement = 'select count(*) as total from articles_message where article_id = ?;'
+    const [msg] = await connection.execute(statement, [articleId])
+    return [msg][0][0]
+  }
+  // 获取文章信息（未转换的）
+  async getArticleDetailSer(articleId) {
+    const statement = "select * from articles where id = ?;"
+    const result1 = await connection.execute(statement, [articleId])
+    /* ******************** 这里的代码作用：为查询到了文章信息添加相关的标签信息 */
+    const statement2 = "select * from aritcles_labels where aritcle_id = ?;";
+    const statement3 = "select * from labels where id = ?;";
+    let endResult = [];
+    await Promise.all(
+      result1[0].map(async (item) => {
+        // 每一个文章
+        let article = item;
+        // 根据文章查关系表，从表中获取这个文章有哪些标签
+        const result2 = await connection.execute(statement2, [item.id]);
+        let labes = [];
+        await Promise.all(
+          result2[0].map(async (item) => {
+            const reslut3 = await connection.execute(statement3, [
+              item.label_id,
+            ]);
+            labes.push(reslut3[0][0]);
+          })
+        );
+        article.labels = labes;
+        endResult.push(article);
+      })
+    );
+    /* ******************** */
+    return endResult
+  }
+  // 删除文章评论
+  async deleteArtMessageSer(articleId) {
+    const statement = "delete from articles_message where id = ?;"
+    const res = await connection.execute(statement, [articleId])
+    return res[0]
   }
 }
 
