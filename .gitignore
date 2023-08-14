@@ -30,5 +30,6 @@ coverage
 *.key
 .env
 .DS_Store
-/config/
+*.pem
+src/config/pcigo/*.*
 
