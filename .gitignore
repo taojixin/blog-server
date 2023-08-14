@@ -32,4 +32,4 @@ coverage
 .DS_Store
 *.pem
 src/config/pcigo/*.*
-
+uploads/*.*
