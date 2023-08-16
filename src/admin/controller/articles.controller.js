@@ -106,7 +106,7 @@ class ArticlsController {
   }
   // 查询文章:根据标签id
   async queryAtricles(ctx, next) {
-    const { labelId } = ctx.request.body;
+    const { labelId } = ctx.params;
     const isExist = await isExistLabel(labelId - 0);
     if (isExist.length !== 0) {
       // 根据labelId获取文章id
@@ -174,7 +174,7 @@ class ArticlsController {
   }
   // 查询标签:根据文章id
   async queryLabels(ctx, next) {
-    const { article_id } = ctx.request.body;
+    const { article_id } = ctx.params;
     const res = await getLabelArtid(article_id);
     ctx.body = {
       code: 0,
@@ -185,7 +185,7 @@ class ArticlsController {
   }
   // 获取文章信息
   async getArticles(ctx, next) {
-    const { count = "all", offset } = ctx.request.body;
+    const { count = "all", offset } = ctx.request.query;
     const result = await getArticlesMsg(count, offset);
     // 为每个结果随机添加一张图片路径
     const imgObj = await store.list({ prefix: "background/" });

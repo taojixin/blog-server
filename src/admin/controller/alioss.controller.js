@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 
-const store = require('../../config/alioss/index')
+const store = require("../../config/alioss/index");
 
 class aliossController {
   // 获取所有Obj
@@ -51,8 +51,8 @@ class aliossController {
   }
   // 获取某个obj中图片
   async getOneObj(ctx, next) {
-    const { objName } = ctx.request.body;
-    const result = await store.list({ prefix: objName });
+    const { albumName } = ctx.params;
+    const result = await store.list({ prefix: albumName });
     const res = result.objects.map((item) => {
       return {
         name: item.name,
@@ -63,7 +63,7 @@ class aliossController {
     ctx.body = {
       code: 0,
       data: {
-        objName,
+        albumName,
         photoList: res,
       },
     };

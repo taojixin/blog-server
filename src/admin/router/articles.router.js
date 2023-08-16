@@ -12,38 +12,39 @@ const {
   modifyArticle,
   getArticleMessage,
   getArticleDetail,
-  deleteArtMessage
+  deleteArtMessage,
 } = require("../controller/articles.controller");
+const { verifyToken } = require("../middleware/login.middleware");
 
-const articleRouter = new KoaRouter({ prefix: "/admin/articles" });
-
-// 获取标签
-articleRouter.get("/getlabels", getLabels);
-// 创建标签
-articleRouter.post("/createlabel", createLabel);
-// 删除标签
-articleRouter.post("/dellabel", delLabel)
+const articleRouter = new KoaRouter({ prefix: "/admin" });
 
 // 创建文章
-articleRouter.post("/createarticle", createArticle);
-// 获取文章信息:count篇，偏移量offset，默认all
-articleRouter.post("/getarticles", getArticles);
+articleRouter.post("/article/create", verifyToken, createArticle);
 // 删除文章
-articleRouter.post("/delarticle", delArticle)
-// 查询文章:根据标签id
-articleRouter.post("/queryarticles", queryAtricles);
-// 查询标签:根据文章id
-articleRouter.post("/querylabel", queryLabels);
-// 查询某个文章是否存在，以及详细内容
-articleRouter.post("/queryisexistart", queryAtricle)
+articleRouter.post("/article/delete", delArticle);
 // 修改文章
-articleRouter.post("/modifyarticle", modifyArticle)
-// 获取文章评论
-articleRouter.post("/getarticlemsg", getArticleMessage)
+articleRouter.post("/article/modify", modifyArticle);
+// 获取文章信息:count篇，偏移量offset，默认all
+articleRouter.get("/articles", getArticles);
+// 查询文章:根据标签id
+articleRouter.get("/article/:labelId", queryAtricles);
+// 查询某个文章是否存在，以及详细内容/article/exist  /queryisexistart
+articleRouter.post("/article/exist", queryAtricle);
 // 获取文章信息(未转换的)
-articleRouter.post("/getArticleDetail", getArticleDetail)
-// 删除文章评论
-articleRouter.post("/deleteartmsg", deleteArtMessage)
+articleRouter.post("/article/origin", getArticleDetail);
 
+// 获取文章评论
+articleRouter.post("/article/comment", getArticleMessage);
+// 删除文章评论
+articleRouter.post("/article/comment/delete", deleteArtMessage);
+
+// 获取标签
+articleRouter.get("/labels", getLabels);
+// 创建标签
+articleRouter.post("/label/create", createLabel);
+// 删除标签
+articleRouter.post("/label/delete", delLabel);
+// 查询标签:根据文章id
+articleRouter.post("/label/:articleId", queryLabels);
 
 module.exports = articleRouter;

@@ -25,7 +25,7 @@ app.on("error", (error, ctx) => {
       message = "密码错误！";
       break;
     case UNAUTHORIZATION:
-      code = -1005;
+      code = 401;
       message = "无效的token或者token已过期！";
       break;
     case PARAMETER_CANNOT_BE_EMPTY_OR_LONG:
@@ -34,5 +34,5 @@ app.on("error", (error, ctx) => {
       break;
   }
 
-  ctx.body = { code, message };
+  ctx.body = { code, message, data: {} };
 });

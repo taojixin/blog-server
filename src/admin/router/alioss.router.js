@@ -19,17 +19,17 @@ const {
   deletePhoto,
 } = require("../controller/alioss.controller");
 
-const aliossRouter = new KoaRouter({ prefix: "/admin/alioss" });
+const aliossRouter = new KoaRouter({ prefix: "/admin" });
 
 // 获取所有Object
-aliossRouter.get("/getallobj", getAllObje);
+aliossRouter.get("/photoalbums", getAllObje);
 // 获取所有图片
-aliossRouter.get("/getallphoto", getAllPhoto);
+aliossRouter.get("/images", getAllPhoto);
 // 获取某个obj中图片
-aliossRouter.post("/getOneObj", getOneObj);
+aliossRouter.post("/images/:albumName", getOneObj);
 // 上传单个图片
-aliossRouter.post("/uploadsingle", upload.single("image"), uploadSingle);
+aliossRouter.post("/image/upload", upload.single("image"), uploadSingle);
 // 删除某个图片
-aliossRouter.post("/deletePhoto", deletePhoto);
+aliossRouter.post("/image/delete", deletePhoto);
 
 module.exports = aliossRouter;

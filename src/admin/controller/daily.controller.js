@@ -6,7 +6,7 @@ const {
   addTimelineSer,
   modifyTimelineSer,
   deleteDailySer,
-  modifyDailySer
+  modifyDailySer,
 } = require("../services/daily.service");
 
 class DailyController {
@@ -47,35 +47,38 @@ class DailyController {
   }
   // 删除日常
   async deleteDaily(ctx, next) {
-    const {dailyId} = ctx.request.body
-    await deleteDailySer(dailyId).then(res => {
-      ctx.body = {
-        code: 0,
-        data: res
-      }
-    }).catch(err => {
-      ctx.body = {
-        code: -1,
-        data: err
-      }
-    })
+    const { dailyId } = ctx.request.body;
+    await deleteDailySer(dailyId)
+      .then((res) => {
+        ctx.body = {
+          code: 0,
+          data: res,
+        };
+      })
+      .catch((err) => {
+        ctx.body = {
+          code: -1,
+          data: err,
+        };
+      });
   }
   // 修改日常
-  async modifyDaily(ctx,next) {
-    const {id, content} = ctx.request.body
-    await modifyDailySer(id,content).then(res => {
-      ctx.body = {
-        code: 0,
-        data: res
-      }
-    }).catch(err => {
-      ctx.body = {
-        code: -1,
-        data: err
-      }
-    })
+  async modifyDaily(ctx, next) {
+    const { id, content } = ctx.request.body;
+    await modifyDailySer(id, content)
+      .then((res) => {
+        ctx.body = {
+          code: 0,
+          data: res,
+        };
+      })
+      .catch((err) => {
+        ctx.body = {
+          code: -1,
+          data: err,
+        };
+      });
   }
-
 
   // 删除时间轴
   async deleteTimeline(ctx, next) {

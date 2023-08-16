@@ -33,3 +33,4 @@ coverage
 *.pem
 src/config/pcigo/*.*
 uploads/*.*
+!uploads/*.gitkeep
