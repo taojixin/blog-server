@@ -1,8 +1,8 @@
 # API接口文档统一说明
 
 * 接口基准地址：
-* * **blog**：http://localhost:8001/blog/
-  * **admin**：http://localhost:8001/admin/
+* * **blog**：http://localhost:8001/blog
+  * **admin**：http://localhost:8001/admin
 * 服务端已开启CORS跨域请求
 * 数据返回格式统一使用JSON：返回格式如下
 
