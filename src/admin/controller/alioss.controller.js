@@ -22,7 +22,8 @@ class aliossController {
   }
   // 获取所有图片
   async getAllPhoto(ctx, next) {
-    // const result = await store.list();
+    const result = await store.list();
+    console.log(result);
     const { prefixes } = await store.list({ delimiter: "/" });
     let allPhotos = [];
     await Promise.all(
@@ -31,7 +32,7 @@ class aliossController {
         const photoList = result.objects.map((item) => {
           return {
             name: item.name,
-            httpsUrl: "https://img.libertys.cn/" + item.name,
+            httpsUrl: "https://libertys.oss-cn-chengdu.aliyuncs.com/" + item.name,
             url: item.url,
           };
         });
@@ -56,7 +57,7 @@ class aliossController {
     const res = result.objects.map((item) => {
       return {
         name: item.name,
-        httpsUrl: "https://img.libertys.cn/" + item.name,
+        httpsUrl: "https://libertys.oss-cn-chengdu.aliyuncs.com" + item.name,
         url: item.url,
       };
     });

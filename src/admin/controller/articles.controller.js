@@ -115,7 +115,7 @@ class ArticlsController {
       const imgObj = await store.list({ prefix: "background/" });
       const imgList = imgObj.objects.map((item) => {
         return {
-          httpsUrl: "https://img.libertys.cn/" + item.name,
+          httpsUrl: "https://libertys.oss-cn-chengdu.aliyuncs.com" + item.name,
         };
       });
 
@@ -191,7 +191,7 @@ class ArticlsController {
     const imgObj = await store.list({ prefix: "background/" });
     const imgList = imgObj.objects.map((item) => {
       return {
-        httpsUrl: "https://img.libertys.cn/" + item.name,
+        httpsUrl: "https://libertys.oss-cn-chengdu.aliyuncs.com/" + item.name,
       };
     });
     const endResult = result.map((item, index) => {
